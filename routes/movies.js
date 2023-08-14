@@ -7,7 +7,7 @@ export const moviesRouter = Router()
 moviesRouter.get('/', MovieController.getAll)
 
 // get movie by id
-moviesRouter.get('/:id', MovieController.get)
+moviesRouter.get('/:id', MovieController.getById)
 
 // post a new movie
 moviesRouter.post('/', MovieController.create)
@@ -16,4 +16,4 @@ moviesRouter.post('/', MovieController.create)
 moviesRouter.delete('/:id', MovieController.delete)
 
 // update a propperty of a movie
-moviesRouter.patch('/:id', MovieController.patch)
+moviesRouter.patch('/:id', MovieController.update)
