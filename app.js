@@ -1,13 +1,15 @@
-const express = require('express')
-const crypto = require('node:crypto')
-const movies = require('./movies.json')
-const cors = require('cors')
-const { validateMovie, validatePartialMovie } = require('./schemas/movies')
+import express, { json } from 'express'
+import { randomUUID } from 'node:crypto'
+import cors from 'cors'
+import { validateMovie, validatePartialMovie } from './schemas/movies.js'
+import { readJSON } from './utils.js'
+
+const movies = readJSON('./movies.json')
 
 const app = express()
 
 // middleware to log all requests
-app.use(express.json())
+app.use(json())
 
 // normal methdos: GET/HEAD/POST
 // complex methods: PUT/PATCH/DELETE
@@ -69,7 +71,7 @@ app.post('/movies', (req, res) => {
 
   // add an id to the movie
   const newMovie = {
-    id: crypto.randomUUID(), // uuidv4
+    id: randomUUID(), // uuidv4
     ...result.data
   }
 
