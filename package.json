@@ -1,17 +1,25 @@
 {
-  "name": "nodejs",
+  "name": "restapi-nodejs",
   "version": "1.0.0",
-  "description": "",
+  "description": "API REST with NodeJs",
   "main": "app.js",
   "scripts": {
     "start": "node ./rest-api-nodejs/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Miguel Oviedo",
   "license": "ISC",
   "dependencies": {
-    "express": "4.18.2",
-    "zod": "3.21.4"
-  }
+    "express": "^4.18.2",
+    "zod": "^3.21.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mickovi/rest-api-nodejs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mickovi/rest-api-nodejs/issues"
+  },
+  "homepage": "https://github.com/mickovi/rest-api-nodejs#readme"
 }
