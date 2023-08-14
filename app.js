@@ -1,6 +1,7 @@
 const express = require('express')
 const crypto = require('node:crypto')
 const movies = require('./movies.json')
+const cors = require('cors')
 const { validateMovie, validatePartialMovie } = require('./schemas/movies')
 
 const app = express()
@@ -8,29 +9,35 @@ const app = express()
 // middleware to log all requests
 app.use(express.json())
 
-// disable x-powered-by header
-app.disable('x-powered-by')
-
 // normal methdos: GET/HEAD/POST
 // complex methods: PUT/PATCH/DELETE
 
 // CORS PRE-FLIGHT
 // OPTIONS /movies
 
-const ACCEPTED_ORIGINS = [
-  'http://localhost:3000',
-  'http://localhost:8080',
-  'http://mymovies.com'
-]
+// OBS: the browser doesn't send the origin header when
+// the request is the same origin
+app.use(cors({
+  origin: (origin, callback) => {
+    const ACCEPTED_ORIGINS = [
+      'http://localhost:3000',
+      'http://localhost:8080',
+      'http://mymovies.com'
+    ]
+
+    if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
+      return callback(null, true)
+    }
+
+    return callback(new Error('Not allowed by CORS'))
+  }
+}))
+
+// disable x-powered-by header
+app.disable('x-powered-by')
 
 // get all movies
 app.get('/movies', (req, res) => {
-  // OBS: the browser doesn't send the origin header when
-  // the request is the same
-  const origin = req.header('origin')
-  if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
-    res.header('Access-Control-Allow-Origin', origin)
-  }
   const { genre } = req.query
   if (genre) {
     const filteredMovies = movies.filter(
@@ -74,10 +81,6 @@ app.post('/movies', (req, res) => {
 })
 
 app.delete('/movies/:id', (req, res) => {
-  const origin = req.header('origin')
-  if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
-    res.header('Access-Control-Allow-Origin', origin)
-  }
   const { id } = req.params
   const movieIndex = movies.findIndex(movie => movie.id === id)
 
@@ -111,15 +114,6 @@ app.patch('/movies/:id', (req, res) => {
 
   movies[movieIndex] = updateMovie
   res.json(updateMovie)
-})
-
-app.options('/movies/:id', (req, res) => {
-  const origin = req.header('origin')
-  if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
-    res.header('Access-Control-Allow-Origin', origin)
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE')
-  }
-  res.send(200)
 })
 
 const PORT = process.env.PORT ?? 3000
